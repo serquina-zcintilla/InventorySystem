@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="application.RegistrationController">
+    <children>
+        <Label layoutX="100" layoutY="60" text="Register User" style="-fx-font-size: 18px;"/>
+        
+        <TextField fx:id="nameField" layoutX="100" layoutY="100" promptText="Name" />
+        <TextField fx:id="emailField" layoutX="100" layoutY="150" promptText="Email" />
+        
+        <Button fx:id="registerButton" layoutX="100" layoutY="200" text="Register" />
+    </children>
+</AnchorPane>

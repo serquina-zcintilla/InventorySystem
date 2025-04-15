@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="application.WelcomeController"
+            style="-fx-background-color: #001f3f;"> <!-- Navy blue background -->
+    <children>
+        <VBox alignment="CENTER" spacing="30" prefWidth="800" prefHeight="600" layoutX="0" layoutY="0">
+            <Label text="SWEEP SYNC" style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-text-fill: white;" />
+            <Button text="Get Started" onAction="#handleStart" 
+                    style="-fx-font-size: 16px; -fx-background-color: white; -fx-text-fill: #001f3f; 
+                           -fx-background-radius: 10; -fx-padding: 10 20;" />
+        </VBox>
+    </children>
+</AnchorPane>

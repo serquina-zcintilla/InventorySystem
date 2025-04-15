@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.Color?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.InventoryController" prefWidth="800" prefHeight="600"
+            style="-fx-background-color: #0a2342;"> <!-- Deep navy blue background -->
+    <children>
+
+        <!-- Main Title -->
+        <Label text="IMPACT: Inventory Management" 
+               layoutX="0" layoutY="20" 
+               prefWidth="800"
+               alignment="CENTER"
+               style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;" />
+
+        <!-- TableView for Tool Data -->
+        <TableView fx:id="toolTable" layoutX="20" layoutY="70" prefWidth="760" prefHeight="400"
+                   style="-fx-background-color: #f4f6f8; -fx-table-cell-border-color: transparent;">
+            <columns>
+                <TableColumn fx:id="toolNameColumn" text="Tool Name" prefWidth="300"/>
+                <TableColumn fx:id="toolQuantityColumn" text="Quantity" prefWidth="200"/>
+                <TableColumn fx:id="toolStatusColumn" text="Status" prefWidth="200"/>
+            </columns>
+        </TableView>
+
+        <!-- VBox for Centered Buttons -->
+        <VBox layoutX="0" layoutY="490" prefWidth="800" alignment="CENTER" spacing="15">
+            
+            <!-- Borrow/Return Buttons -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button text="Borrow Tool" fx:id="borrowButton" prefWidth="140"
+                        style="-fx-background-color: #1c3f60; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" />
+                <Button text="Return Tool" fx:id="returnButton" prefWidth="140"
+                        style="-fx-background-color: #1c3f60; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" />
+            </HBox>
+
+            <!-- Add/Edit/Delete Buttons -->
+            <HBox spacing="20" alignment="CENTER">
+                <Button text="Add Tool" fx:id="addButton" prefWidth="110"
+                        style="-fx-background-color: #256D85; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" />
+                <Button text="Edit Tool" fx:id="editButton" prefWidth="110"
+                        style="-fx-background-color: #256D85; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" />
+                <Button text="Delete Tool" fx:id="deleteButton" prefWidth="110"
+                        style="-fx-background-color: #B33030; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" />
+            </HBox>
+        </VBox>
+
+    </children>
+</AnchorPane>

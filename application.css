@@ -1,0 +1,26 @@
+/* Application CSS */
+.label {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.button {
+    -fx-background-color: navy; /* Navy blue background */
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #001f4d; /* Darker navy on hover */
+}
+
+.table-view {
+    -fx-font-size: 14px;
+}
+
+.table-column {
+    -fx-alignment: CENTER;
+}
