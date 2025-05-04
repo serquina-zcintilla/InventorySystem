@@ -1,0 +1,171 @@
+package default1;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.*;
+
+public class StudentPage {
+    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=LMS Test;encrypt=true;trustServerCertificate=true";
+    private static final String USER = "chris";
+    private static final String PASSWORD = "Christian";
+
+    private static JScrollPane scrollPane;
+    private static JTable table;
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("🧼 Student Dashboard - Cleaning Tools");
+        frame.setSize(700, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+
+        // Header panel
+        JPanel header = new JPanel();
+        header.setBackground(new Color(0, 102, 153));
+        JLabel title = new JLabel("Student Dashboard");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 26));
+        title.setForeground(Color.WHITE);
+        header.add(title);
+        frame.add(header, BorderLayout.NORTH);
+
+        // Center display area using scrollPane
+        scrollPane = new JScrollPane();
+        frame.add(scrollPane, BorderLayout.CENTER);
+
+        // Button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+        JButton viewButton = new JButton("📋 View Tools");
+        JButton borrowButton = new JButton("👜 Borrow Tool");
+        JButton returnButton = new JButton("🔁 Return Tool");
+        JButton exitButton = new JButton("🚪 Exit");
+
+        JButton[] buttons = { viewButton, borrowButton, returnButton, exitButton };
+        for (JButton btn : buttons) {
+            btn.setFont(new Font("Segoe UI", Font.PLAIN, 16));
+            btn.setBackground(new Color(204, 229, 255));
+            btn.setFocusPainted(false);
+            buttonPanel.add(btn);
+        }
+
+        frame.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Actions
+        viewButton.addActionListener(e -> displayInventory());
+        borrowButton.addActionListener(e -> borrowTool());
+        returnButton.addActionListener(e -> returnTool());
+        exitButton.addActionListener(e -> {
+            frame.dispose();
+            LogInPage.main(new String[]{}); // Back to login
+        });
+
+        // Finalize UI
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+    }
+
+    private static void displayInventory() {
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            String query = "SELECT ItemID AS 'ID', Name AS 'Name', Quantity AS 'Qty', Unit AS 'Unit' FROM dbo.inventory WHERE Quantity > 0";
+            try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+
+                ResultSetMetaData meta = rs.getMetaData();
+                int columnCount = meta.getColumnCount();
+
+                String[] columnNames = new String[columnCount];
+                for (int i = 1; i <= columnCount; i++) {
+                    columnNames[i - 1] = meta.getColumnLabel(i);
+                }
+
+                DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+                while (rs.next()) {
+                    Object[] row = new Object[columnCount];
+                    for (int i = 1; i <= columnCount; i++) {
+                        row[i - 1] = rs.getObject(i);
+                    }
+                    model.addRow(row);
+                }
+
+                table = new JTable(model);
+                table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+                table.setRowHeight(25);
+                table.setEnabled(false);
+
+                // Styling the header
+                JTableHeader header = table.getTableHeader();
+                header.setBackground(new Color(0, 102, 153)); // dark blue
+                header.setForeground(Color.WHITE);
+                header.setFont(new Font("Segoe UI", Font.BOLD, 14));
+
+                // Styling the table rows
+                table.setBackground(new Color(224, 242, 255)); // light blue
+                table.setForeground(Color.BLACK);
+                table.setGridColor(Color.LIGHT_GRAY);
+
+                scrollPane.setViewportView(table);
+
+            }
+        } catch (SQLException e) {
+            JTextArea errorText = new JTextArea("Error: " + e.getMessage());
+            errorText.setFont(new Font("Monospaced", Font.PLAIN, 14));
+            errorText.setEditable(false);
+            errorText.setMargin(new Insets(10, 10, 10, 10));
+            scrollPane.setViewportView(errorText);
+        }
+    }
+
+    private static void borrowTool() {
+        String itemId = JOptionPane.showInputDialog("Enter Item ID to borrow:");
+        if (itemId == null || itemId.trim().isEmpty()) return;
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            String checkQuery = "SELECT Quantity FROM dbo.inventory WHERE ItemID = ?";
+            try (PreparedStatement checkStmt = conn.prepareStatement(checkQuery)) {
+                checkStmt.setString(1, itemId);
+                try (ResultSet rs = checkStmt.executeQuery()) {
+                    if (rs.next()) {
+                        int qty = rs.getInt("Quantity");
+                        if (qty > 0) {
+                            String updateQuery = "UPDATE dbo.inventory SET Quantity = Quantity - 1 WHERE ItemID = ?";
+                            try (PreparedStatement updateStmt = conn.prepareStatement(updateQuery)) {
+                                updateStmt.setString(1, itemId);
+                                updateStmt.executeUpdate();
+                                JOptionPane.showMessageDialog(null, "Tool borrowed successfully!");
+                                displayInventory();
+                            }
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Item out of stock.");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Invalid Item ID.");
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+        }
+    }
+
+    private static void returnTool() {
+        String itemId = JOptionPane.showInputDialog("Enter Item ID to return:");
+        if (itemId == null || itemId.trim().isEmpty()) return;
+
+        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD)) {
+            String updateQuery = "UPDATE dbo.inventory SET Quantity = Quantity + 1 WHERE ItemID = ?";
+            try (PreparedStatement stmt = conn.prepareStatement(updateQuery)) {
+                stmt.setString(1, itemId);
+                int affected = stmt.executeUpdate();
+                if (affected > 0) {
+                    JOptionPane.showMessageDialog(null, "Tool returned successfully!");
+                    displayInventory();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Invalid Item ID.");
+                }
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+        }
+    }
+}
