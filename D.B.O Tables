@@ -1,0 +1,39 @@
+CREATE TABLE dbo.users (
+    UserID INT IDENTITY(1,1) PRIMARY KEY,
+    full_name NVARCHAR(100) NOT NULL,
+    id_number NVARCHAR(50) NOT NULL,
+    password NVARCHAR(50) NOT NULL,
+    email NVARCHAR(100) NULL
+);
+
+
+CREATE TABLE dbo.inventory (
+    ItemID INT PRIMARY KEY IDENTITY(1,1),
+    Name VARCHAR(100),
+    Quantity INT,
+    Unit VARCHAR(50),
+    Supplier VARCHAR(100),
+    MaxQuantity INT
+);
+
+
+CREATE TABLE BorrowHistory (
+    HistoryID INT PRIMARY KEY IDENTITY(1,1),
+    StudentName VARCHAR(100),
+    StudentID VARCHAR(50),
+    Course VARCHAR(100),
+    ItemID INT,
+    Quantity INT,
+    DateTimeBorrowed DATETIME DEFAULT GETDATE()
+);
+
+
+CREATE TABLE ReturnHistory (
+    HistoryID INT PRIMARY KEY IDENTITY(1,1),
+    StudentName VARCHAR(100),
+    StudentID VARCHAR(50),
+    Course VARCHAR(100),
+    ItemID INT,
+    QuantityReturned INT,
+    DateTimeReturned DATETIME DEFAULT GETDATE()
+);
